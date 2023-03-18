@@ -11,6 +11,8 @@ import {
   createChatCardButton,
 } from "./exploit-vulnerability.js";
 
+import { manageImplements } from "./implements.js";
+
 //This is a temporary fix until a later pf2e system update. The function hooks on renderChatMessage attack-rolls
 //If the thaumaturge makes an attack-roll, the target's weakness updates with the correct amount
 //If it's not the thaumaturge that makes the attack-roll, it changes the weakness to 0
@@ -121,5 +123,30 @@ Hooks.on("deleteItem", async (item) => {
     await sa.setFlag("pf2e-thaum-vuln", "activeEV", false);
     await sa.unsetFlag("pf2e-thaum-vuln", "EVTargetID");
     await sa.unsetFlag("pf2e-thaum-vuln", "EVMode");
+  }
+});
+
+Hooks.on("renderCharacterSheetPF2e", async (_, html) => {
+  console.log("its rendered");
+  const a = canvas.tokens.controlled[0].actor;
+  if (a.items.some((i) => i.slug === "first-implement-and-esoterica")) {
+    console.log("we hit the sheet", html);
+    const inventoryList = html.find(
+      ".sheet-body .inventory-list.directory-list.inventory-pane"
+    );
+    const manageImplementButton = $(
+      `<button class="manage-implements-button">Manage Implements</button>`
+    );
+    console.log("inventory list", inventoryList);
+    inventoryList.append(
+      `<div class="inventory-header">
+    <h3 class="item-name">Thaumaturge Implements</h3></div>
+    
+    `
+    );
+    inventoryList.append(manageImplementButton);
+    manageImplementButton.off("click").on("click", function () {
+      manageImplements();
+    });
   }
 });
