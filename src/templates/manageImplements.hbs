@@ -6,7 +6,14 @@
 <div class="dropboxes">
   {{#each implements}}
     <h3>{{counter}} Implement ({{name}})</h3>
-    <div class="dropbox" id="{{counter}}" implement-type="{{name}}"><span
+    <div
+      class="dropbox"
+      id="{{counter}}"
+      implement-type="{{name}}"
+      is-adept="{{adept}}"
+      is-paragon="{{paragon}}"
+      can-intensify="{{intensify}}"
+    ><span
         class="flex-container item-content-wrapper"
         style="display: flex; height: 100%; width: 100%; border: 1px solid black"
         id="{{counter}}-drop-item-content"

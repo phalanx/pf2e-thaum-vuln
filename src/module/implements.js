@@ -146,21 +146,69 @@ export async function manageImplements() {
     const imp = await fromUuid(
       `${a.uuid}.Item.${firstImplement.rules[1].grantedId}`
     );
-    imps.push({ counter: "First", name: imp.name });
+    imps.push({
+      counter: "First",
+      name: imp.name,
+      adept: "false",
+      paragon: "false",
+      intensify: "false",
+    });
   }
   if (a.items.some((i) => i.slug === "second-implement")) {
-    const firstImplement = a.items.find((i) => i.slug === "second-implement");
+    const secondImplement = a.items.find((i) => i.slug === "second-implement");
     const imp = await fromUuid(
-      `${a.uuid}.Item.${firstImplement.rules[1].grantedId}`
+      `${a.uuid}.Item.${secondImplement.rules[1].grantedId}`
     );
-    imps.push({ counter: "Second", name: imp.name });
+    imps.push({
+      counter: "Second",
+      name: imp.name,
+      adept: "false",
+      paragon: "false",
+      intensify: "false",
+    });
   }
   if (a.items.some((i) => i.slug === "third-implement")) {
-    const firstImplement = a.items.find((i) => i.slug === "third-implement");
+    const thirdImplement = a.items.find((i) => i.slug === "third-implement");
     const imp = await fromUuid(
-      `${a.uuid}.Item.${firstImplement.rules[1].grantedId}`
+      `${a.uuid}.Item.${thirdImplement.rules[1].grantedId}`
     );
-    imps.push({ counter: "Third", name: imp.name });
+    imps.push({
+      counter: "Third",
+      name: imp.name,
+      adept: "false",
+      paragon: "false",
+      intensify: "false",
+    });
+  }
+
+  for (let imp of imps) {
+    if (a.items.some((i) => i.slug === "intensify-vulnerability")) {
+      imp.intensify = "true";
+    }
+    if (a.items.some((i) => i.slug === "implement-adept")) {
+      if (
+        imp.name.toLowerCase() ===
+        a.items.find((i) => i.slug === "implement-adept").rules[0].selection
+      ) {
+        imp.adept = "true";
+      }
+    }
+    if (a.items.some((i) => i.slug === "second-adept")) {
+      if (
+        imp.name.toLowerCase() ===
+        a.items.find((i) => i.slug === "second-adept").rules[0].selection
+      ) {
+        imp.adept = "true";
+      }
+    }
+    if (a.items.some((i) => i.slug === "implement-paragon")) {
+      if (
+        imp.name.toLowerCase() ===
+        a.items.find((i) => i.slug === "implement-paragon").rules[0].selection
+      ) {
+        imp.paragon = "true";
+      }
+    }
   }
 
   const passImps = { implements: imps };
@@ -241,6 +289,7 @@ async function handleDrop(event) {
   $(itemLabelBox).appendTo(newDropFieldContent);
 
   //creates another span that will hold the description of the implement
+
   const implementFlavor = $(
     '<span style="overflow:scroll; padding:10px;"></span>'
   );
@@ -253,6 +302,31 @@ async function handleDrop(event) {
       implementData[$(dropFieldText).attr("implement-type")].benefits.initiate
     }</p>`
   );
+  if ($(dropFieldText).attr("is-adept") === "true") {
+    $(implementFlavor).append("<h3>Adept Benefit</h3>");
+    $(implementFlavor).append(
+      `<p>${
+        implementData[$(dropFieldText).attr("implement-type")].benefits.adept
+      }</p>`
+    );
+  }
+  if ($(dropFieldText).attr("is-paragon") === "true") {
+    $(implementFlavor).append("<h3>Paragon Benefit</h3>");
+    $(implementFlavor).append(
+      `<p>${
+        implementData[$(dropFieldText).attr("implement-type")].benefits.paragon
+      }</p>`
+    );
+  }
+  if ($(dropFieldText).attr("can-intensify") === "true") {
+    $(implementFlavor).append("<h3>Intensify Vulnerability</h3>");
+    $(implementFlavor).append(
+      `<p>${
+        implementData[$(dropFieldText).attr("implement-type")].intensify
+      }</p>`
+    );
+  }
+
   $(implementFlavor).appendTo($(newDropFieldContent));
 
   $(newDropFieldContent).appendTo($(dropFieldText));
